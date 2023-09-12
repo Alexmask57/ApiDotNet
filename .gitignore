@@ -1,0 +1,13 @@
+/PokemonApi/bin/
+/PokemonApi/obj/
+.idea/
+.vscode/
+/TestPokemonApi/bin/
+/TestPokemonApi/obj/
+gen/
+.DS_Store
+/.vs
+/PokemonApi/Migrations
+/grafana-data/
+/PokemonWebApp/obj/
+/PokemonWebApp/bin/
