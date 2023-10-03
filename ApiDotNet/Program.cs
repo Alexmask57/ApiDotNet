@@ -49,6 +49,21 @@ builder.Services
 builder.Services.AddControllers().AddJsonOptions(
     options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 
+// TODO Regarder cette histoire de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "_myAllowSpecificOrigins",
+        policy  =>
+        {
+            policy.AllowAnyHeader();
+            // policy.AllowAnyOrigin();
+            policy.AllowAnyMethod();
+            policy.AllowCredentials();
+            policy.WithOrigins("http://localhost:4200");
+            policy.WithOrigins("https://alexmaskapi.azurewebsites.net");
+        });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 
 // Ajout de Swagger
@@ -144,11 +159,12 @@ builder.Services
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+// if (app.Environment.IsDevelopment())
+// {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+// }
+app.UseCors("_myAllowSpecificOrigins");
 
 app.UseHttpsRedirection();
 

@@ -81,36 +81,44 @@ public class AuthController : ControllerBase
     [Route("login")]
     public async Task<ActionResult<AuthResponse>> Authenticate([FromBody] AuthRequest request)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var managedUser = await _userManager.FindByEmailAsync(request.Email);
-        if (managedUser == null)
-            return BadRequest("Bad credentials");
-
-        var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
-        if (!isPasswordValid)
-            return BadRequest("Bad credentials");
-
-        var userRole = await _userManager.GetRolesAsync(managedUser);
-
-        var userInDb = _usersContext.Users.FirstOrDefault(u => u.Email == request.Email);
-        if (userInDb is null)
-            return Unauthorized();
-        var accessToken = userRole.Count != 0 ? _tokenService.CreateToken(userInDb, userRole) : _tokenService.CreateToken(userInDb);
-        
-        _usersContext.UserTokens.Add(new IdentityUserToken<string>()
+        try
         {
-            UserId = userInDb.Id, LoginProvider = "AuthController", Name = "Authentication token", Value = accessToken
-        });
-        await _usersContext.SaveChangesAsync();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var managedUser = await _userManager.FindByEmailAsync(request.Email);
+            if (managedUser == null)
+                return BadRequest("Bad credentials");
+
+            var isPasswordValid = await _userManager.CheckPasswordAsync(managedUser, request.Password);
+            if (!isPasswordValid)
+                return BadRequest("Bad credentials");
+
+            var userRole = await _userManager.GetRolesAsync(managedUser);
+
+            var userInDb = _usersContext.Users.FirstOrDefault(u => u.Email == request.Email);
+            if (userInDb is null)
+                return Unauthorized();
+            var accessToken = userRole.Count != 0 ? _tokenService.CreateToken(userInDb, userRole) : _tokenService.CreateToken(userInDb);
         
-        return Ok(new AuthResponse
+            _usersContext.UserTokens.Add(new IdentityUserToken<string>()
+            {
+                UserId = userInDb.Id, LoginProvider = "AuthController", Name = $"{userInDb.UserName}-{DateTime.Now.ToFileTime()}", Value = accessToken
+            });
+            await _usersContext.SaveChangesAsync();
+        
+            return Ok(new AuthResponse
+            {
+                Username = userInDb.UserName,
+                Email = userInDb.Email,
+                Token = accessToken,
+            });
+        }
+        catch (Exception e)
         {
-            Username = userInDb.UserName,
-            Email = userInDb.Email,
-            Token = accessToken,
-        });
+            _logger.LogCritical(e, "Une erreur est survenue lors du login");
+            return StatusCode(500, "Une erreur interne au serveur est survenue.");
+        }
     }
 
     [HttpPut]
