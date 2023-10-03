@@ -4,7 +4,6 @@ using System.Reflection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ApiDotNet.Context;
@@ -12,6 +11,7 @@ using ApiDotNet.Models.Authentication;
 using ApiDotNet.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 var mySqlJwtAuthenticationConnectionString = builder.Configuration.GetConnectionString("MySqlJWTAuthenticationConnectionString");
 var mySqlCachingConnectionString = builder.Configuration.GetConnectionString("MySqlCachingConnectionString");
@@ -157,6 +157,13 @@ builder.Services
     });
 
 var app = builder.Build();
+
+// Migrate database automatically
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<UsersContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())

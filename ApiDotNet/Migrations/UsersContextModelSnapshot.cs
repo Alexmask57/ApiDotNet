@@ -48,19 +48,19 @@ namespace ApiDotNet.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d5cb9553-adc7-4772-94e8-ca1708b378c1",
+                            Id = "9d991123-b1d8-4936-9a4c-13692a9efa5e",
                             Name = "Default",
                             NormalizedName = "DEFAULT"
                         },
                         new
                         {
-                            Id = "198bf318-a3ec-49e9-b453-2b4d7760a9ae",
+                            Id = "a1470883-239d-4f2f-af0f-d679b24eaeaa",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "5c920d6c-c736-4321-998e-28f185ddc7fc",
+                            Id = "4f943ed5-8501-459f-ac13-3e49bdf9ed6a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
