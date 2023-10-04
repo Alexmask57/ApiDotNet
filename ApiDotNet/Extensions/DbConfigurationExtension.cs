@@ -15,7 +15,9 @@ public static class DbConfigurationExtension
     /// <param name="builder"></param>
     public static void SetUsersDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("MySqlJWTAuthenticationConnectionString");
+        var connectionString = IsDeveloppement() ?
+            builder.Configuration.GetConnectionString("MySqlJWTAuthenticationConnectionString") :
+            Environment.GetEnvironmentVariable("MYSQLCONNSTR_MySqlJWTAuthenticationConnectionString");
 
         builder.Services.AddDbContext<UsersContext>(
             dbContextOptions => dbContextOptions
@@ -38,5 +40,10 @@ public static class DbConfigurationExtension
 
         builder.Services.AddDbContext<CachingContext>(dbContextOptions =>
             dbContextOptions.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+    }
+
+    private static bool IsDeveloppement()
+    {
+        return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
     }
 }
