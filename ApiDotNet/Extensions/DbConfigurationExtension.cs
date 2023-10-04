@@ -15,7 +15,7 @@ public static class DbConfigurationExtension
     /// <param name="builder"></param>
     public static void SetUsersDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("MYSQLCONNSTR_JWTAUTHENTICATION");
+        var connectionString = builder.Configuration.GetConnectionString("JWTAUTHENTICATION");
 
         builder.Services.AddDbContext<UsersContext>(
             dbContextOptions => dbContextOptions
