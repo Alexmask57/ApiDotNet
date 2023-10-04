@@ -7,8 +7,7 @@ using ApiDotNet.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.SetUsersDbContext();
-// builder.SetCachingDbContext();
-
+builder.SetCachingDbContext();
 
 builder.Services.AddControllers().AddJsonOptions(
     options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
