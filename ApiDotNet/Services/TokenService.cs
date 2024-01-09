@@ -21,29 +21,17 @@ public class TokenService
         _configuration = configuration;
         _logger = logger;
     }
-
-    public string CreateToken(ApplicationUser user)
-    {
-        var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
-        var token = CreateJwtToken(
-            CreateClaims(user),
-            CreateSigningCredentials(),
-            expiration
-        );
-        var tokenHandler = new JwtSecurityTokenHandler();
-        return tokenHandler.WriteToken(token);
-    }
     
-    public string CreateToken(ApplicationUser user, IList<string> roles)
+    public string CreateToken(ApplicationUser user, IList<string> roles, out DateTime tokenExpirationDate)
     {
-        var expiration = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
+        tokenExpirationDate = DateTime.UtcNow.AddMinutes(ExpirationMinutes);
         var claims = CreateClaims(user);
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
         // claims.Add(new Claim(ClaimTypes.Role, GetHigherRole(roles)));
         var token = CreateJwtToken(
             claims,
             CreateSigningCredentials(),
-            expiration
+            tokenExpirationDate
         );
         var tokenHandler = new JwtSecurityTokenHandler();
         return tokenHandler.WriteToken(token);

@@ -99,7 +99,8 @@ public class AuthController : ControllerBase
             var userInDb = _usersContext.Users.FirstOrDefault(u => u.Email == request.Email);
             if (userInDb is null)
                 return Unauthorized();
-            var accessToken = userRole.Count != 0 ? _tokenService.CreateToken(userInDb, userRole) : _tokenService.CreateToken(userInDb);
+            DateTime tokenExpirationToken;
+            var accessToken = _tokenService.CreateToken(userInDb, userRole, out tokenExpirationToken);
         
             _usersContext.UserTokens.Add(new IdentityUserToken<string>()
             {
@@ -112,6 +113,7 @@ public class AuthController : ControllerBase
                 Username = userInDb.UserName,
                 Email = userInDb.Email,
                 Token = accessToken,
+                TokenExpirationDate = tokenExpirationToken
             });
         }
         catch (Exception e)
