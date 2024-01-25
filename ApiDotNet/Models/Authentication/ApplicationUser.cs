@@ -8,6 +8,7 @@ public class ApplicationUser : IdentityUser<string>
     public virtual ICollection<IdentityUserLogin<string>> Logins { get; set; }
     public virtual ICollection<IdentityUserToken<string>> Tokens { get; set; }
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+    public virtual ICollection<Credentials> Credentials { get; set; }
 
     public ApplicationUser()
     {

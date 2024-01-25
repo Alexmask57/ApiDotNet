@@ -1,8 +1,13 @@
 version: '3.7'
+
+#networks:
+#  dev:
+#    driver: bridge
+
 services:
-      
+  
   # Database - MySql
-  mysql_container:
+  mysql:
     image: mysql:latest
     volumes:
       - "./data:/docker-entrypoint-initdb.d"
@@ -11,6 +16,30 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=root
+#    networks:
+#      - dev
+    restart: always
+  
+  # Api .Net 7
+  api:
+    build:
+      context: .
+      dockerfile: ApiDotNet/Dockerfile
+    ports:
+      - "5200:80"
+    depends_on:
+      - "mysql"
+    restart: always
+    environment:
+      - DBHOST=mysql
+      - ASPNETCORE_ENVIRONMENT=Development
+#      - ConnectionStrings_JWTAUTHENTICATION=server=mysql_container-1;user=root;password=root;database=JWTAuthentication;
+#    networks: 
+#      - dev
+  
+  
 
 volumes:
   mysql_data_container:

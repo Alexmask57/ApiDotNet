@@ -1,3 +1,4 @@
+using ApiDotNet.Config;
 using ApiDotNet.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,17 @@ public static class DbConfigurationExtension
     /// <param name="builder"></param>
     public static void SetUsersDbContext(this WebApplicationBuilder builder)
     {
-        var connectionString = builder.Configuration.GetConnectionString("JWTAUTHENTICATION");
-
+        var host = builder.Configuration["DBHOST"] ?? "localhost";
+        var port = builder.Configuration["DBPORT"] ?? "3306";
+        var password = builder.Configuration["MYSQL_PASSWORD"] ?? builder.Configuration.GetConnectionString("MYSQL_PASSWORD");
+        var userid = builder.Configuration["MYSQL_USER"] ?? builder.Configuration.GetConnectionString("MYSQL_USER");
+        var usersDataBase = builder.Configuration["MYSQL_DATABASE"] ?? builder.Configuration.GetConnectionString("MYSQL_DATABASE");
+        
+        var connectionString = $"server={host}; userid={userid};pwd={password};port={port};database={usersDataBase}";
+        
+        // var connectionString = builder.Configuration.GetConnectionString("JWTAUTHENTICATION");
+        Console.WriteLine("connectionString");
+        Console.WriteLine(connectionString);
         builder.Services.AddDbContext<UsersContext>(
             dbContextOptions => dbContextOptions
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))

@@ -1,3 +1,4 @@
+using ApiDotNet.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ public class UsersContext : IdentityDbContext<
     {
         
     }
+    
+    public DbSet<Credentials>? Credentials { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -46,6 +49,10 @@ public class UsersContext : IdentityDbContext<
                 .WithOne(e => e.User)
                 .HasForeignKey(ur => ur.UserId)
                 .IsRequired();
+            
+            // Ajout de credentials pour chaques users
+            b.HasMany(e => e.Credentials)
+                .WithOne(e => e.User);
             
             // Ajout de l'id auto-incrémenté
             b.Property(p => p.Id).ValueGeneratedOnAdd();
