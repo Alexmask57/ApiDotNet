@@ -35,7 +35,6 @@ services:
     environment:
       - DBHOST=mysql
       - ASPNETCORE_ENVIRONMENT=Development
-#      - ConnectionStrings_JWTAUTHENTICATION=server=mysql_container-1;user=root;password=root;database=JWTAuthentication;
 #    networks: 
 #      - dev
   
