@@ -21,7 +21,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect and pull
         run: |
-          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && docker build -t apidotnet -f ApiDotNet/Dockerfile . && docker rm apidotnet && docker run --name apidotnet -p 5200:80 -p 5202:443 -d apidotnet && exit"
+          ssh -i ~/.ssh/id_rsa ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && docker build -t apidotnet -f ApiDotNet/Dockerfile . && docker rm apidotnet && docker run --name apidotnet -p 5200:80 -p 5202:443 -e MYSQL_PASSWORD='${{secrets.MYSQL_PASSWORD}}' -e MYSQL_USER='${{secrets.MYSQL_USER}}' -e DBHOST='${{92.222.101.124}}' -d apidotnet && exit"
       - name: cleanup
         run: rm -rf ~/.ssh
         
