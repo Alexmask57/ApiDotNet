@@ -22,15 +22,13 @@ public static class SecurityConfigurationExtension
         
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy(name: builder.Configuration.GetValue<string>("CorsPolicyName"),
+            options.AddPolicy(name: builder.Configuration.GetValue<string>("CorsPolicyName") ?? "ApiDotNetCorsPolicy",
                 policy  =>
                 {
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                    policy.AllowCredentials();
-                    if (authorizedUrls is null) return;
-                    foreach (var url in authorizedUrls)
-                        policy.WithOrigins(url);
+                    policy
+                        .WithOrigins(authorizedUrls.ToArray())
+                        .AllowAnyMethod()
+                        .AllowAnyHeader();
                 });
         });
     }

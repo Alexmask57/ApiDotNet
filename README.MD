@@ -1,6 +1,6 @@
 # ApiDotNet
 
-## Lancer le projet
+## Lancer le projet en local
 
 - Démarrer tous les services :
 
@@ -10,24 +10,56 @@
 - Initialiser la BDD MySql :
     ```shell
     cd ApiDotNet
-    dotnet ef migrations add initialMigration
     dotnet ef database update
     ```
-- Créer un user ayant le rôle administrateur
-  Récupérer l'id du rôle "Administrateur" dans la table
 
 La base de données est prête à être utilisée !
 
-## Script vue UsersRoles
+## Gitflow
 
-```sql
-select
-    AspNetUsers.Id as UserId,
-    AspNetUsers.UserName as UserName, 
-    AspNetRoles.Id as RoleId,
-    AspNetRoles.Name as RoleName
-from AspNetUsers
-left join AspNetUserRoles on AspNetUsers.Id = AspNetUserRoles.UserId
-left join AspNetRoles on AspNetUserRoles.RoleId = AspNetRoles.Id
-group by UserId
+```mermaid
+    gitGraph
+        commit
+        branch azure
+        branch develop
+        branch feature
+        commit
+        commit
+        checkout develop
+        merge feature
+        commit
+        commit
+        checkout azure
+        merge develop
+        checkout main
+        merge develop
+        checkout feature
+        commit
+        checkout develop
+        merge feature
+        checkout azure
+        merge develop
+        checkout main
+        merge develop
+        checkout develop
+        commit
+        commit
 ```
+
+### Branches
+
+- **main** : Déploie sur le serveur linux
+
+- **azure** : Déploie sur le cloud Azure
+
+- **develop** : Branche de développement
+
+- **feature** : Développement d'une feature
+
+## Rôles
+
+Par défaut, on retrouve les rôles :
+- Défault
+- Developer
+- Admin
+

@@ -60,7 +60,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 // }
 
-app.UseCors(builder.Configuration.GetValue<string>("CorsPolicyName"));
+app.UseCors(builder.Configuration.GetValue<string>("CorsPolicyName") ?? "ApiDotNetCorsPolicy");
 
 app.UseHttpsRedirection();
 
