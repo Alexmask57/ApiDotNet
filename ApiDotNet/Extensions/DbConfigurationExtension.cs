@@ -25,8 +25,6 @@ public static class DbConfigurationExtension
         var connectionString = $"server={host}; userid={userid};pwd={password};port={port};database={usersDataBase}";
         
         // var connectionString = builder.Configuration.GetConnectionString("JWTAUTHENTICATION");
-        Console.WriteLine("connectionString");
-        Console.WriteLine(connectionString);
         builder.Services.AddDbContext<UsersContext>(
             dbContextOptions => dbContextOptions
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
