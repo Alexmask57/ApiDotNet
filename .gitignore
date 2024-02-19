@@ -7,5 +7,4 @@
 gen/
 .DS_Store
 /.vs
-/ApiDotNet/Migrations
 /grafana-data/
