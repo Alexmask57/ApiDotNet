@@ -6,6 +6,7 @@ using ApiDotNet.Context;
 using ApiDotNet.Models.Authentication;
 using ApiDotNet.Models.Dto;
 using ApiDotNet.Services;
+using Asp.Versioning;
 
 namespace ApiDotNet.Controllers;
 
@@ -13,7 +14,9 @@ namespace ApiDotNet.Controllers;
 /// Controlleur d'authentification
 /// </summary>
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion(1)]
+[ApiVersion(2)]
+[Route("api/v{v:apiVersion}/[controller]")]
 public class AuthController : ControllerBase
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -122,7 +125,7 @@ public class AuthController : ControllerBase
             return StatusCode(500, "Une erreur interne au serveur est survenue.");
         }
     }
-
+    
     [HttpPut]
     [Route("ChangePassword")]
     public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
@@ -159,9 +162,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet]
+    [MapToApiVersion(1)]
     [Route("GetAllUsers")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> GetAllUsers()
+    public async Task<ActionResult> GetAllUsersV1()
     {
         return Ok(_usersContext.Users.Select(x =>
         new
@@ -170,5 +174,20 @@ public class AuthController : ControllerBase
             Email = x.Email,
             Roles = new List<string>(x.UserRoles.Select(role => role.Role.Name)!)
         }));
+    }
+    
+    [HttpGet]
+    [MapToApiVersion(2)]
+    [Route("GetAllUsers")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult> GetAllUsersV2()
+    {
+        return Ok(_usersContext.Users.Select(x =>
+            new
+            {
+                UserName = x.UserName,
+                Email = x.Email,
+                Roles = new List<string>(x.UserRoles.Select(role => role.Role.Name)!)
+            }));
     }
 }

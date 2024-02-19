@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiDotNet.Context;
 using ApiDotNet.Extensions;
 using ApiDotNet.Services.Interfaces;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,20 @@ builder.SetCors();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.SetSwagger();
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 // Ajout du service de récupération de véhicules (utile pour la mise en cache)
 builder.Services.AddScoped<IVehicleService, VehicleService>();
@@ -41,8 +56,8 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 // if (app.Environment.IsDevelopment())
 // {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 // }
 
 app.UseCors(builder.Configuration.GetValue<string>("CorsPolicyName"));
