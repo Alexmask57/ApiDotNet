@@ -76,7 +76,7 @@ public static class SecurityConfigurationExtension
                     ValidAudience = "apiWithAuthBackend",
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(jwtSecret)
-                    ),
+                    ){KeyId = "MyKey"},
                 };
             });
     }

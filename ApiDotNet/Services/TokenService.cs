@@ -100,7 +100,7 @@ public class TokenService
         return new SigningCredentials(
             new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JwtSecret"))
-            ),
+            ){KeyId = "MyKey"},
             SecurityAlgorithms.HmacSha256
         );
     }
